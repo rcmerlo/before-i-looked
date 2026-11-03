@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
@@ -75,6 +75,12 @@ describe('readNight edges', () => {
       '{"at":"t","job":"a","status":"ok","owner":null,"error":5}',
     ];
     expect(night('shape', bad.join('\n'))).toEqual({ rows: [], badLines: bad.length });
+  });
+
+  it('treats a night that is a path as missing', () => {
+    writeFileSync(join(dir, 'outside.jsonl'), '{"at":"t","job":"a","status":"ok","owner":null}');
+    mkdirSync(join(dir, 'runs'), { recursive: true });
+    expect(readNight(join(dir, 'runs'), '../outside')).toBeNull();
   });
 
   it('does not swallow other read errors as missing', () => {

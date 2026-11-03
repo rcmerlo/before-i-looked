@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 import type { DigestRow, JobStatus, ReadNight } from './types.js';
 
 type RunLine = { at: string; job: string; status: JobStatus; owner: string | null; error?: string };
@@ -33,6 +33,8 @@ function readLog(file: string): string | null {
 }
 
 export const readNight: ReadNight = (runsDir, night) => {
+  // The night comes from a URL: a name inside runsDir, never a path out of it.
+  if (night !== basename(night)) return null;
   const text = readLog(join(runsDir, `${night}.jsonl`));
   if (text === null) return null;
 
