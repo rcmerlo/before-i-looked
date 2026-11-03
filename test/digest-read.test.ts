@@ -35,6 +35,7 @@ describe('readNight on 2026-10-28', () => {
       owner: 'rook',
       runs: 4,
       retries: 3,
+      fails: 0,
       lastStatus: 'ok',
       lastError: null,
       firstAt: '2026-10-29T01:30:00+01:00',
@@ -75,6 +76,11 @@ describe('readNight edges', () => {
       '{"at":"t","job":"a","status":"ok","owner":null,"error":5}',
     ];
     expect(night('shape', bad.join('\n'))).toEqual({ rows: [], badLines: bad.length });
+  });
+
+  it('counts a fail even when the job ends ok', () => {
+    const text = '{"at":"t","job":"a","status":"fail","owner":null,"error":"x"}\n{"at":"t","job":"a","status":"ok","owner":null}\n';
+    expect(night('recovered', text)?.rows[0]).toMatchObject({ runs: 2, fails: 1, lastStatus: 'ok', lastError: null });
   });
 
   it('treats a night that is a path as missing', () => {

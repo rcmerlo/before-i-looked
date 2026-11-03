@@ -53,6 +53,7 @@ export const readNight: ReadNight = (runsDir, night) => {
       owner: run.owner,
       runs: (row?.runs ?? 0) + 1,
       retries: (row?.retries ?? 0) + (run.status === 'retry' ? 1 : 0),
+      fails: (row?.fails ?? 0) + (run.status === 'fail' ? 1 : 0),
       lastStatus: run.status,
       lastError: run.error ?? null,
       firstAt: row?.firstAt ?? run.at,
